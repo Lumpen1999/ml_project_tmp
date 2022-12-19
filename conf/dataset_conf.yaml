@@ -1,0 +1,24 @@
+default: &default
+  docfile:
+  header:
+  csv_sep: ','
+  remove_col_index: []
+  target_col_index: -1
+  label_encoding_for_target: false
+  scaling_for_target: false
+
+tmp:
+  task:
+  url:
+  filename:
+  cat_col_index: []
+  <<: *default
+
+  # california-housing-prices:
+  # task: regression
+  # url: https://www.kaggle.com/camnugent/california-housing-prices
+  # filename: housing.csv
+  # cat_col_index: [9]
+  # <<: *default
+  # target_col_index: 8
+  # header: 0

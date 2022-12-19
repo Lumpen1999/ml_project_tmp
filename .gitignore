@@ -1,0 +1,17 @@
+__pycache/
+*.pyc
+*.pt
+
+.venv/
+
+logs/
+datasets/
+outputs/
+mlruns/
+
+*.db
+*.csv
+*.dat
+*.data
+*.xlsx
+*.zip
