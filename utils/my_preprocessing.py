@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler, LabelEncoder
 
+
 def standardization(X_train: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     if type(X_train) is pd.core.frame.Series:
@@ -12,8 +13,8 @@ def standardization(X_train: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFram
     if len(num_cols) > 0:
         sc = StandardScaler().fit(X_train[num_cols])
         scaled_train = pd.DataFrame(sc.transform(X_train[num_cols]), columns=num_cols, index=X_train.index)
-        X_train.update(scaled_train)
         scaled_test = pd.DataFrame(sc.transform(X_test[num_cols]), columns=num_cols, index=X_test.index)
+        X_train.update(scaled_train)
         X_test.update(scaled_test)
         print(f'Standardization for {len(num_cols)} columns')
 
@@ -22,10 +23,14 @@ def standardization(X_train: pd.DataFrame, X_test: pd.DataFrame) -> (pd.DataFram
 
 def _df_merge_for_encoding(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
 
-    df1_col_num = df1.values.shape[1]
-    df2_col_num = df2.values.shape[1]
-    df1_row_num = df1.values.shape[0]
-    df2_row_num = df2.values.shape[0]
+    # df1_col_num = df1.values.shape[1]
+    # df1_row_num = df1.values.shape[0]
+
+    # df2_col_num = df2.values.shape[1]
+    # df2_row_num = df2.values.shape[0]
+
+    df1_row_num, df1_col_num =  df1.values.shape
+    df2_row_num, df2_col_num =  df2.values.shape
 
     df1 = pd.concat([df1, df2], axis=1)
 
@@ -46,9 +51,10 @@ def one_hot_encoding(X_train: pd.DataFrame, X_test: pd.DataFrame, cat_col_index:
     if len(cat_cols) > 0:
 
         X_train_new_cols = encoder.fit_transform(X_train[cat_cols].values)
+        X_test_new_cols = encoder.transform(X_test[cat_cols].values)
+
         new_cols_names = encoder.get_feature_names_out(cat_cols)
         X_train_new_cols = pd.DataFrame(X_train_new_cols, columns=new_cols_names, index=X_train.index)
-        X_test_new_cols = encoder.transform(X_test[cat_cols].values)
         X_test_new_cols = pd.DataFrame(X_test_new_cols, columns=new_cols_names, index=X_test.index)
 
         X_train.drop(cat_cols, axis=1, inplace=True)
@@ -56,6 +62,7 @@ def one_hot_encoding(X_train: pd.DataFrame, X_test: pd.DataFrame, cat_col_index:
 
         X_train = _df_merge_for_encoding(X_train, X_train_new_cols)
         X_test = _df_merge_for_encoding(X_test, X_test_new_cols)
+
         print(f'One hot encoding for {len(cat_cols)} columns')
 
     return X_train, X_test
@@ -72,12 +79,15 @@ def label_encoding(X_train: pd.DataFrame, X_test: pd.DataFrame, cat_col_index: l
     cat_cols = [c for i, c in enumerate(X_train.columns) if i in cat_col_index]
 
     if len(cat_cols) > 0:
+
         X_train_new_cols = encoder.fit_transform(X_train[cat_cols].values)
         X_train_new_cols = pd.DataFrame(X_train_new_cols, columns=cat_cols, index=X_train.index) 
         X_train.update(X_train_new_cols)
+
         X_test_new_cols = encoder.transform(X_test[cat_cols].values)
         X_test_new_cols = pd.DataFrame(X_test_new_cols, columns=cat_cols, index=X_test.index)
         X_test.update(X_test_new_cols)
+
         print(f'Label encoding for {len(cat_cols)} columns')
 
     return X_train, X_test

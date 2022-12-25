@@ -15,9 +15,9 @@ def load_dataset(owd: str, dataset_name: str, dataset_info: dict, show_info: boo
     else:
         target_col_index = dataset_info['target_col_index']
 
+    # Select feature columns
     new_col_index = 0
     mapping_dict = {} 
-
     for i, c in enumerate(X.columns):
 
         if show_info:
@@ -55,7 +55,7 @@ def load_dataset(owd: str, dataset_name: str, dataset_info: dict, show_info: boo
 
 def main():
     owd = os.getcwd() 
-    dataset_name= 'california-housing-prices'
+    dataset_name = 'california-housing-prices'
 
     with open(f'{owd}/conf/dataset_conf.yaml', 'r') as yml:
         dataset_conf = yaml.safe_load(yml)
